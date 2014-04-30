@@ -30,7 +30,7 @@ class CsvReader
                 $keys = array_shift($rows);
                 $rows = array_values($rows);
 
-                foreach($rows as $key => $column) {
+                foreach ($rows as $key => $column) {
                     $rows[$key] = array_combine($keys, $column);
                 }
             } else {
