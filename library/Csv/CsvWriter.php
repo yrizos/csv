@@ -81,4 +81,9 @@ class CsvWriter
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this->getCsv();
+    }
+
 }
