@@ -1,7 +1,7 @@
 {
     "name": "yrizos/csv",
     "type": "library",
-    "license": "MIT",
+    "license": "wtfpl",
     "keywords": ["csv"],
     "description": "CSV Reader / Writer",
     "authors": [
