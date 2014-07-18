@@ -4,7 +4,6 @@ namespace Csv;
 
 class CsvWriter
 {
-    use CsvTrait;
 
     public function __construct(array $rows = array(), array $keys = array(), $columnDelimiter = ",", $rowDelimiter = "\n", $enclosure = '"', $skipEmptyRows = true)
     {

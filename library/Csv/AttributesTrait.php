@@ -2,31 +2,11 @@
 
 namespace Csv;
 
-trait CsvTrait
+trait AttributesTrait
 {
-
-    private $path;
-    private $rows = array();
-    private $keys = array();
-    private $columnDelimiter = ",";
-    private $rowDelimiter = "\n";
-    private $enclosure = '"';
-    private $skipEmptyRows = true;
-
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    public function getRows()
-    {
-        return $this->rows;
-    }
-
-    public function getKeys()
-    {
-        return $this->keys;
-    }
+    private $columnDelimiter = Csv::DEFAULT_COLUMN_DELIMITER;
+    private $rowDelimiter = Csv::DEFAULT_ROW_DELIMITER;
+    private $enclosure = Csv::DEFAULT_ENCLOSURE;
 
     public function setColumnDelimiter($delimiter)
     {
@@ -64,16 +44,5 @@ trait CsvTrait
         return $this->enclosure;
     }
 
-    public function setSkipEmptyRows($skipEmptyRows)
-    {
-        $this->skipEmptyRows = ($skipEmptyRows === true);
 
-        return $this;
-    }
-
-    public function getSkipEmptyRows()
-    {
-        return $this->skipEmptyRows;
-    }
-
-} 
+}
