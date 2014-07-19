@@ -1,5 +1,6 @@
 {
     "name": "yrizos/csv",
+    "description": "Simple library to work with CSV files.",
     "type": "library",
     "license": "MIT",
     "keywords": ["csv"],
