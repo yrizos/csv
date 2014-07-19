@@ -68,9 +68,37 @@ class CsvTest extends PHPUnit_Framework_TestCase
     public function testLoadFile()
     {
         $path = realpath(dirname(__FILE__) . "/../data/us-500.csv");
-        $csv  = new Csv($path);
+
+        $csv = new Csv();
+        $csv->setRowDelimiter("\r\n");
+        $csv->parse($path);
         $rows = $csv->getRows();
 
+        $this->assertArrayHasKey(1, $rows);
+        $this->assertInternalType("array", $rows[1]);
+        $this->assertArrayHasKey(0, $rows[1]);
+        $this->assertEquals("James", $rows[1][0]);
     }
+
+    public function testSaveFile()
+    {
+
+        $source      = realpath(dirname(__FILE__) . "/../data/us-500.tsv");
+        $destination = dirname(__FILE__) . "/../data/temp.csv";
+
+        if (file_exists($destination)) unlink($destination);
+
+        $tsv = new Csv($source, "\r\n", "\t");
+        $tsv->setRowDelimiter("\n")->setColumnDelimiter(",")->save($destination);
+
+        $this->assertFileExists($destination);
+
+        $csv = new Csv($destination, "\n", ",");
+
+        $this->assertEquals($tsv->getRows(), $csv->getRows());
+
+        unlink($destination);
+    }
+
 
 } 
