@@ -1,22 +1,29 @@
 {
     "name": "yrizos/csv",
     "type": "library",
-    "license": "wtfpl",
+    "license": "MIT",
     "keywords": ["csv"],
-    "description": "CSV Reader / Writer",
+    "homepage": "https://github.com/yrizos/csv",
+
     "authors": [
         {
             "name": "Yannis Rizos",
             "email": "yrizos@gmail.com",
-            "homepage": "https://github.com/yrizos/csv"
+            "homepage": "https://twitter.com/yrizos"
         }
     ],
+
     "require": {
         "php": ">=5.4.0"
     },
+
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*@dev"
+    },
+
     "autoload": {
-        "psr-0": {
-            "Csv": "library/"
+        "psr-4": {
+            "Csv\\": "library/Csv/"
         }
     }
 }
