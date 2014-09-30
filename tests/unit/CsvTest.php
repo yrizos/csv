@@ -80,25 +80,41 @@ class CsvTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("James", $rows[1][0]);
     }
 
-    public function testSaveFile()
+    public function testUseFirstRowAsKeys()
     {
+        $path = realpath(dirname(__FILE__) . "/../data/us-500.csv");
 
-        $source      = realpath(dirname(__FILE__) . "/../data/us-500.tsv");
-        $destination = dirname(__FILE__) . "/../data/temp.csv";
+        $csv = new Csv();
+        $csv->setRowDelimiter("\r\n");
+        $csv->setUseFirstRowAsKeys(true);
+        $csv->parse($path);
+        $rows = $csv->getRows();
+        $rows = array_slice($rows, 0, 4);
 
-        if (file_exists($destination)) unlink($destination);
-
-        $tsv = new Csv($source, "\r\n", "\t");
-        $tsv->setRowDelimiter("\n")->setColumnDelimiter(",")->save($destination);
-
-        $this->assertFileExists($destination);
-
-        $csv = new Csv($destination, "\n", ",");
-
-        $this->assertEquals($tsv->getRows(), $csv->getRows());
-
-        unlink($destination);
+        foreach ($rows as $row) {
+            $this->assertArrayHasKey('first_name', $row);
+            $this->assertArrayHasKey('last_name', $row);
+            $this->assertArrayHasKey('company_name', $row);
+            $this->assertArrayHasKey('address', $row);
+            $this->assertArrayHasKey('city', $row);
+        }
     }
 
 
+    public function testSaveFile()
+    {
+        $source      = realpath(dirname(__FILE__) . "/../data/us-500.csv");
+        $destination = dirname(__FILE__) . "/../data/us-500.tsv";
+
+        if (file_exists($destination)) unlink($destination);
+
+        $csv = new Csv($source, true, "\r\n");
+        $csv->setColumnDelimiter("\t");
+        $csv->save($destination);
+
+        $this->assertFileExists($destination);
+
+        $tsv = new Csv($destination, true, "\r\n", "\t");
+        $this->assertEquals($tsv->getRows(), $csv->getRows());
+    }
 } 

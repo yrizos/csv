@@ -2,7 +2,7 @@
 
 namespace Csv;
 
-class Csv implements CsvInterface
+class Csv implements \Countable, \Iterator
 {
     const DEFAULT_COLUMN_DELIMITER = ",";
     const DEFAULT_ROW_DELIMITER    = "\n";
@@ -34,13 +34,20 @@ class Csv implements CsvInterface
     private $enclosure;
 
     /**
+     * @var bool
+     */
+    private $useFirstRowAsKeys = false;
+
+    /**
      * @param string|array|CsvInterface|null $csv
+     * @param bool $useFirstRowAsKeys
      * @param string $rowDelimiter
      * @param string $columnDelimiter
      * @param string $enclosure
      */
-    public function __construct($csv = null, $rowDelimiter = self::DEFAULT_ROW_DELIMITER, $columnDelimiter = self::DEFAULT_COLUMN_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE)
+    public function __construct($csv = null, $useFirstRowAsKeys = false, $rowDelimiter = self::DEFAULT_ROW_DELIMITER, $columnDelimiter = self::DEFAULT_COLUMN_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE)
     {
+        $this->setUseFirstRowAsKeys($useFirstRowAsKeys);
         $this->setRowDelimiter($rowDelimiter);
         $this->setColumnDelimiter($columnDelimiter);
         $this->setEnclosure($enclosure);
@@ -122,9 +129,18 @@ class Csv implements CsvInterface
      */
     public function setRows(array $rows = [])
     {
-        $this->rows = array_filter($rows, function ($row) {
+        $rows = array_filter($rows, function ($row) {
             return !empty($row);
         });
+
+        if ($this->getUseFirstRowAsKeys() && !empty($rows)) {
+            $first = array_shift($rows);
+            $rows  = array_map(function ($row) use ($first) {
+                return array_combine($first, $row);
+            }, $rows);
+        }
+
+        $this->rows = $rows;
 
         return $this;
     }
@@ -142,7 +158,12 @@ class Csv implements CsvInterface
      */
     public function getString()
     {
-        $rows   = $this->getRows();
+        $rows = $this->getRows();
+        if (empty($rows)) return "";
+
+        $keys = array_keys($rows[0]);
+        if (array_diff($keys, array_keys($keys)) != []) array_unshift($rows, $keys);
+
         $rowdel = $this->getRowDelimiter();
         $coldel = $this->getColumnDelimiter();
         $enc    = $this->getEnclosure();
@@ -168,6 +189,25 @@ class Csv implements CsvInterface
     public function __toString()
     {
         return $this->getString();
+    }
+
+    /**
+     * @param bool $value
+     * @return $this
+     */
+    public function setUseFirstRowAsKeys($value)
+    {
+        $this->useFirstRowAsKeys = (bool) $value;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseFirstRowAsKeys()
+    {
+        return $this->useFirstRowAsKeys;
     }
 
     /**
